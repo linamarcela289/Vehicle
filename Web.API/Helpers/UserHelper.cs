@@ -6,6 +6,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Web.API.Data;
 using Web.API.Data.Entities;
+using Web.API.Models;
 
 namespace Web.API.Helpers
 {
@@ -13,15 +14,16 @@ namespace Web.API.Helpers
     {
         private readonly UserManager<User> _userManager;
         private readonly RoleManager<IdentityRole> _roleManager;
-
         private readonly DataContext _context;
+        private readonly SignInManager<User> _signInManager;
 
-      
-        public UserHelper(UserManager<User> userManager, RoleManager<IdentityRole> roleManager, DataContext context )
+
+        public UserHelper(UserManager<User> userManager, RoleManager<IdentityRole> roleManager, DataContext context, SignInManager<User> signInManager)
         {
             _userManager = userManager;
             _roleManager = roleManager;
             _context = context;
+            _signInManager = signInManager;
         }
 
         public DataContext Context { get; }
@@ -55,6 +57,16 @@ namespace Web.API.Helpers
         public async Task<bool> IsUserInRoleAsync(User user, string roleName)
         {
             return await _userManager.IsInRoleAsync(user, roleName);
+        }
+
+        public async Task<SignInResult> LoginAsync(LoginViewModel model)
+        {
+            return await _signInManager.PasswordSignInAsync(model.Username, model.Password, model.RememberMe, false);
+        }
+
+        public async Task LogoutAsync()
+        {
+            await _signInManager.SignOutAsync();
         }
     }
 }

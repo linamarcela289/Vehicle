@@ -9,7 +9,8 @@ using Web.API.Data.Entities;
 namespace Web.API.Controllers
 {
 
-        public class BrandsController : Controller
+    [Authorize(Roles = "Admin")]
+    public class BrandsController : Controller
         {
             private readonly DataContext _context;
 
