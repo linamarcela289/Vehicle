@@ -39,8 +39,8 @@ namespace Web.API.Data.Entities
         //TODO: Fix the images
         [Display(Name = "Foto")]
         public string ImageFullPath => ImageId == Guid.Empty
-            ? $"https://localhost:44337//images/noimage.png"
-            : $"https://localhost:44337//users/{ImageId}";
+            ? $"https://localhost:44337/images/noimage.png"
+            : $"https://localhost:44337/users/{ImageId}";
 
 
         [Display(Name = "Tipo de usuario")]
@@ -48,5 +48,7 @@ namespace Web.API.Data.Entities
 
         [Display(Name = "Usuario")]
         public string FullName => $"{FirstName} {LastName}";
+
+        public ICollection<Vehicle> Vehicles { get; set; }
     }
 }

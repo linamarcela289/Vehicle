@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Web.API.Data;
 
 namespace Web.API.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20210910015042_Finistmodelo")]
+    partial class Finistmodelo
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -237,10 +239,15 @@ namespace Web.API.Migrations
                     b.Property<string>("Remarks")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
                     b.Property<int>("VehicleId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("UserId");
 
                     b.HasIndex("VehicleId");
 
@@ -529,6 +536,10 @@ namespace Web.API.Migrations
 
             modelBuilder.Entity("Web.API.Data.Entities.History", b =>
                 {
+                    b.HasOne("Web.API.Data.Entities.User", null)
+                        .WithMany("Histories")
+                        .HasForeignKey("UserId");
+
                     b.HasOne("Web.API.Data.Entities.Vehicle", "Vehicle")
                         .WithMany("Histories")
                         .HasForeignKey("VehicleId")
@@ -602,6 +613,8 @@ namespace Web.API.Migrations
 
             modelBuilder.Entity("Web.API.Data.Entities.User", b =>
                 {
+                    b.Navigation("Histories");
+
                     b.Navigation("Vehicles");
                 });
 
