@@ -36,7 +36,21 @@ namespace Web.API.Helpers
 
         public IEnumerable<SelectListItem> GetComboDocumentTypes()
         {
-            throw new NotImplementedException();
+            List<SelectListItem> list = _context.DocumentTypes.Select(x => new SelectListItem
+            {
+                Text = x.Description,
+                Value = $"{x.Id}"
+            })
+                            .OrderBy(x => x.Text)
+                            .ToList();
+
+            list.Insert(0, new SelectListItem
+            {
+                Text = "[Seleccione un tipo de documento...]",
+                Value = "0"
+            });
+
+            return list;
         }
 
         public IEnumerable<SelectListItem> GetComboProcedures()

@@ -19,6 +19,11 @@ namespace Web.API.Data.Entities
         [Display(Name = "Foto")]
         public string ImageFullPath => ImageId == Guid.Empty
             ? $"https://localhost:44337/images/noimage.png"
-            : $"https://localhost:44337/vehiclephotos/{ImageId}";
+            : $"https://vehiclesln.blob.core.windows.net/users/{ImageId}";
+
+
+
+
+
     }
 }
