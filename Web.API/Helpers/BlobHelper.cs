@@ -56,5 +56,7 @@ namespace Web.API.Helpers
             CloudBlockBlob blockBlob = container.GetBlockBlobReference($"{id}");
             await blockBlob.DeleteAsync();
         }
+
+
     }
   }

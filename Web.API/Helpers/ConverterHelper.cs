@@ -82,10 +82,10 @@ namespace Web.API.Helpers
                 Model = vehicle.Model,
                 Plaque = vehicle.Plaque.ToUpper(),
                 Remarks = vehicle.Remarks,
-                UserId = vehicle.User.Id
-              /*  VehiclePhotos = vehicle.VehiclePhotos,
+                UserId = vehicle.User.Id,
+                VehiclePhotos = vehicle.VehiclePhotos,
                 VehicleTypeId = vehicle.VehicleType.Id,
-                VehicleTypes = _combosHelper.GetComboVehicleTypes()*/
+                VehicleTypes = _combosHelper.GetComboVehicleTypes()
             };
         }
     }
