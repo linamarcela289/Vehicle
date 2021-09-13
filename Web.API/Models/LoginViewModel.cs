@@ -17,7 +17,5 @@ namespace Web.API.Models
 
         [Display(Name = "Recordarme")]
         public bool RememberMe { get; set; }
-
-
     }
 }

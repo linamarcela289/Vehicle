@@ -8,7 +8,7 @@ using Web.API.Models;
 
 namespace Web.API.Controllers
 {
-    [Authorize(Roles = "Admin")]
+
     public class AccountController : Controller
     {
         private readonly IUserHelper _userHelper;
@@ -17,7 +17,6 @@ namespace Web.API.Controllers
             _userHelper = userHelper;
 
         }
-
         public IActionResult Login()
         {
             if (User.Identity.IsAuthenticated)
@@ -27,6 +26,7 @@ namespace Web.API.Controllers
 
             return View(new LoginViewModel());
         }
+
         [HttpPost]
         public async Task<IActionResult> Login(LoginViewModel model)
         {
