@@ -27,14 +27,17 @@ namespace Web.API.Data.Entities
         [DisplayFormat(DataFormatString = "{0:N0}")]
         public int Mileage { get; set; }
 
+        [Display(Name = "Observación")]
+        [DataType(DataType.MultilineText)]
+        public string Remarks { get; set; }
+
+        [JsonIgnore]
         [Display(Name = "Mecánico")]
         [Required(ErrorMessage = "El campo {0} es obligatorio.")]
         public User User { get; set; }
 
-        [Display(Name = "Observación")]
-        [DataType(DataType.MultilineText)]
-        public string Remarks { get; set; }
         public ICollection<Detail> Details { get; set; }
+
         [Display(Name = "# Detalles")]
         public int DetailsCount => Details == null ? 0 : Details.Count;
 
