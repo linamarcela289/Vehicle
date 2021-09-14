@@ -21,7 +21,7 @@ namespace Web.API.Helpers
         Task<IdentityResult> UpdateUserAsync(User user);
         Task<IdentityResult> DeleteUserAsync(User user);
         Task LogoutAsync();
-
+        Task<IdentityResult> ChangePasswordAsync(User user, string oldPassword, string newPassword);
         Task<User> AddUserAsync(AddUserViewModel model, Guid imageId, UserType userType);
     }
 }
