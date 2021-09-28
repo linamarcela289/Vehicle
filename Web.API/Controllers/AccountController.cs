@@ -1,4 +1,5 @@
 ﻿using Common.Enums;
+using Common.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -19,13 +20,16 @@ namespace Web.API.Controllers
         private readonly DataContext _context;
         private readonly ICombosHelper _combosHelper;
         private readonly IBlobHelper _blobHelper;
+        private readonly IMailHelper _mailHelper;
 
-        public AccountController(IUserHelper userHelper, DataContext context, ICombosHelper combosHelper, IBlobHelper blobHelper)
+        public AccountController(IUserHelper userHelper, DataContext context, ICombosHelper combosHelper, 
+            IBlobHelper blobHelper, IMailHelper mailHelper)
         {
             _userHelper = userHelper;
             _context = context;
             _combosHelper = combosHelper;
             _blobHelper = blobHelper;
+            this._mailHelper = mailHelper;
 
         }
         public IActionResult Login()
@@ -101,21 +105,25 @@ namespace Web.API.Controllers
                     model.DocumentTypes = _combosHelper.GetComboDocumentTypes();
                     return View(model);
                 }
-                LoginViewModel loginViewModel = new LoginViewModel
+
+
+                string myToken = await _userHelper.GenerateEmailConfirmationTokenAsync(user);
+                string tokenLink = Url.Action("ConfirmEmail", "Account", new
                 {
-                    Password = model.Password,
-                    Username = model.Username,
-                    RememberMe = false
+                    userid = user.Id,
+                    token = myToken
+                }, protocol: HttpContext.Request.Scheme);
 
-                };
-
-                var result2 = await _userHelper.LoginAsync(loginViewModel);
-                if (result2.Succeeded)
+                Response response = _mailHelper.SendMail(model.Username, "Vehicles - Confirmación de cuenta", $"<h1>Vehicles - Confirmación de cuenta</h1>" +
+                    $"Para habilitar el usuario, " +
+                    $"por favor hacer clic en el siguiente enlace: </br></br><a href = \"{tokenLink}\">Confirmar Email</a>");
+                if (response.IsSuccess)
                 {
-                    return RedirectToAction("Index", "Home");
-
+                    ViewBag.Message = "Las instrucciones para habilitar su cuenta han sido enviadas al correo.";
+                    return View(model);
                 }
 
+                ModelState.AddModelError(string.Empty, response.Message);
             }
 
             model.DocumentTypes = _combosHelper.GetComboDocumentTypes();
@@ -206,5 +214,28 @@ namespace Web.API.Controllers
 
             return View(model);
         }
+
+        public async Task<IActionResult> ConfirmEmail(string userId, string token)
+        {
+            if (string.IsNullOrEmpty(userId) || string.IsNullOrEmpty(token))
+            {
+                return NotFound();
+            }
+
+            User user = await _userHelper.GetUserAsync(new Guid(userId));
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            IdentityResult result = await _userHelper.ConfirmEmailAsync(user, token);
+            if (!result.Succeeded)
+            {
+                return NotFound();
+            }
+
+            return View();
+        }
+
     }
 }
