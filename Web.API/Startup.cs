@@ -5,6 +5,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 using Web.API.Data;
 using Web.API.Data.Entities;
 using Web.API.Helpers;
@@ -38,7 +40,18 @@ namespace Web.API
             })
                    .AddDefaultTokenProviders()
                 .AddEntityFrameworkStores<DataContext>();
-                
+
+            services.AddAuthentication()
+                .AddCookie()
+                .AddJwtBearer(cfg =>
+                {
+                    cfg.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        ValidIssuer = Configuration["Tokens:Issuer"],
+                        ValidAudience = Configuration["Tokens:Audience"],
+                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["Tokens:Key"]))
+                    };
+                });
 
             services.AddDbContext<DataContext>(x =>
             {
